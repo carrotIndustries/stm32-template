@@ -1,0 +1,6 @@
+pkgs
+*.o
+*.d
+*.bin*
+*.elf
+*.ld
