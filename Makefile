@@ -35,7 +35,7 @@ STARTUP = startup_stm32f407xx.s
 # We need to specify a linker script for the linker
 LDSCRIPT = STM32F407VG_FLASH.ld
 LDSCRIPT_IN = $(LDSCRIPT).in
-LDFLAGS  = -T$(LDSCRIPT),--gc-sections
+LDFLAGS  = -T$(LDSCRIPT),--gc-sections -lm
 
 SRC = $(STARTUP) \
       $(TARGET).c \
@@ -67,7 +67,7 @@ OBJ  = $(COBJ) $(SOBJ)
 # Compile thumb for Cortex M4 with debug info
 MCU     = cortex-m4
 MCFLAGS =-mcpu=$(MCU) -mthumb -mlittle-endian -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb-interwork
-OPTIMIZE=-O3 -fdata-sections -ffunction-sections
+OPTIMIZE=-O3 -fdata-sections -ffunction-sections -fsingle-precision-constant
 DEBUG   =-g3
 CFLAGS  =$(MCFLAGS) $(DEBUG)  $(OPTIMIZE) -MP -MMD
 
@@ -90,7 +90,7 @@ $(BIN): $(EXECUTABLE)
 	$(CP) -O binary $^ $@
 
 $(EXECUTABLE): $(OBJ) $(LDSCRIPT)
-	$(CC) -Wl,$(LDFLAGS) $(CFLAGS) $(sort $(OBJ)) -o $@
+	$(CC) $(CFLAGS) $(sort $(OBJ)) -Wl,$(LDFLAGS) -o $@
 
 $(COBJ): %.o: %.c
 	$(CC) -c $(DEFINES) $(INC) $(CFLAGS) $< -o $@
